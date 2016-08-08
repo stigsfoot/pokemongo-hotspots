@@ -32,5 +32,5 @@ This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md
 * [`Lodash`](https://github.com/lodash/lodash) as a better way to manage arrays
 * [`knockout-fast-foreach`](https://github.com/brianmhunt/knockout-fast-foreach) for better foreach binding
 
-![NPM](ttps://img.shields.io/npm/v/npm.svg)
+![NPM](https://img.shields.io/npm/v/npm.svg)
 ![GNU](https://img.shields.io/aur/license/yaourt.svg)
