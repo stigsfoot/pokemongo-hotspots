@@ -2,7 +2,7 @@
 
 Silly SPA to determine which areas have a lot of Pokemon activity. Use when planning a romantic date with your spouse for a "Pokefic" nightcap. Rrraaaarrrwwwh!
 
-_This project was my submission as part of the Front-End Nanodegree at Udacity._
+_This project was my submission as part of the **Front-End Nanodegree** at Udacity._
 
 
 ## Getting Started
@@ -32,5 +32,5 @@ This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md
 * [`Lodash`](https://github.com/lodash/lodash) as a better way to manage arrays
 * [`knockout-fast-foreach`](https://github.com/brianmhunt/knockout-fast-foreach) for better foreach binding
 
-![NPM](https://img.shields.io/npm/v/generator-ko-spa.svg)
-![GNU](https://img.shields.io/npm/l/generator-ko-spa.svg)
+![NPM](ttps://img.shields.io/npm/v/npm.svg)
+![GNU](https://img.shields.io/aur/license/yaourt.svg)
