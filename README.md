@@ -1,6 +1,6 @@
 # LitStops | Pokemon Hotspots
 
-Silly SPA to determine which areas have a lot of Pokemon activity. Use when planning a romantic date with your spouse for a "Pokefic" nightcap. Rrraaaarrrwwwh!
+Silly SPA to determine which areas have a lot of Pokemon activity. Use when planning a romantic date with your spouse for a "Poke-rific" nightcap. **Rrraaaarrrwwwh!**
 
 _This project was my submission as part of the **Front-End Nanodegree** at Udacity._
 
