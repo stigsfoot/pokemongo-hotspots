@@ -127,11 +127,12 @@ function initMap() {
 
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {
-            lat: 38.907192,
-            lng: -77.036871
+            lat: 38.8067193,
+            lng: -77.0420541
         },
         zoom: 12,
         styles: styleArray,
+        mapTypeControl: false,
         disableDoubleClickZoom: true
     });
 

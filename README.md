@@ -14,7 +14,7 @@ These instructions will get you a copy of LitStops up and running on your local 
 You can see this project live on Firebase [LitStops](http://litstops.firebaseapp.com). However to run it locally, you need to simply run
 
 ```
-index.htm
+app/index.htm
 ```
 
 ### Usage
