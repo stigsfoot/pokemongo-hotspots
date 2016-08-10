@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>LitStops | Pokemon Hotspots</title>
+  <title>Poké-n-Chill | Pokémon Hotspots</title>
   <link href="styles/style.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.cyan-light_blue.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.blue_grey-pink.min.css" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,7 +19,7 @@
     <!-- // begin header -->
     <header class="main-header mdl-layout__header mdl-color--cyan mdl-color-text--white">
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title" data-bind="visible: pokestops(count), text: pokestops(count)">22 Popular Pokestops Here</span>
+        <span class="mdl-layout-title" data-bind="visible: pokestops(count), text: pokestops(count)">22 Popular Pokéstops Here</span>
         <div class="mdl-layout-spacer"></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
           <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
@@ -28,8 +27,8 @@
           </label>
           <div class="mdl-textfield__expandable-holder">
             <!-- bind keyword search to ko observable -->
-            <input data-bind="value: keyword" class="mdl-textfield__input" placeholder="Search Pokéstops" type="text" id="search">
-            <label class="mdl-textfield__label" for="search">Search Pokéstops</label>
+            <input data-bind="value: keyword" class="mdl-textfield__input " placeholder="Search Pokéstops" type="text" id="search">
+            <label class="mdl-textfield__label mdl-color-text--white" for="search"> Search Pokéstops</label>
           </div>
         </div>
         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
@@ -38,8 +37,8 @@
         </button>
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
           <!-- leverages dialog boxes -->
-          <li class="mdl-menu__item">About</li>
-          <li class="mdl-menu__item">Github</li>
+          <li class="mdl-menu__item">About Me</li>
+          <li class="mdl-menu__item">Github Profile</li>
           <li class="mdl-menu__item">Twitter</li>
         </ul>
       </div>
@@ -47,11 +46,13 @@
     <!-- // end header -->
 
     <!-- Begin aside content/bindings -->
-    <aside class="main-drawer mdl-layout__drawer mdl-color--cyan-700 mdl-color-text--grey-600">
+    <aside class=" mdl-layout__drawer mdl-color--cyan">
       <header class="main-drawer-header">
+        <img src="http://i1.wp.com/nintendo-papercraft.com/wp-content/uploads/2014/04/pokeball.png?resize=75%2C75" width="65" class="main-logo" />
       <!-- logo in BG -->
       </header>
       <nav class="main-navigation mdl-navigation mdl-color--blue-grey-800">
+      <!--loops through filtered densely populated pokestop -->
         <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Washington, DC</a>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Arlington</a>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Alexandria</a>
