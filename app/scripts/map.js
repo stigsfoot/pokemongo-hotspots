@@ -1,4 +1,8 @@
-
+/**
+*  Proj 5 : Neighborhood Map Project
+*  Author: Noble Ackerson
+*  map.js Manages Google Maps API data
+*/
 var firebase = new Firebase("https://lit-pokestops.firebaseio.com/");
 
 // Initialize the map
