@@ -23,7 +23,7 @@
     <!-- // begin header -->
     <header class="main-header mdl-layout__header mdl-color--cyan mdl-color-text--white">
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title" data-bind="visible: pokestops(count), text: pokestops(count)">22 Popular Pokéstops Here</span>
+        <span data-bind="text: foursquareCount" class="mdl-layout-title">  Popular Pokéstops Here</span>
         <div class="mdl-layout-spacer"></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
           <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
@@ -40,7 +40,7 @@
           <i class="material-icons">more_vert</i>
         </button>
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
-          <!-- leverages dialog boxes -->
+          <!-- Popup dialog boxes -->
           <li class="mdl-menu__item">About Me</li>
           <li class="mdl-menu__item">Github Profile</li>
           <li class="mdl-menu__item">Twitter</li>
