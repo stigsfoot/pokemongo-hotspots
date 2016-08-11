@@ -28,7 +28,8 @@ app.Response = function(lat, lng, query, callback) {
 
     var FOURSQUARE_CLIENTID = 'AGY01VY2EHXDQOJB0QLY25IQXZKMZLHJAX3CWWPU5HYVPYPT';
     var FOURSQUARE_SECRET   = 'EUKNHNC0ZQNTFWXHOW3USKLCTGEKGWF5KQQCT5OJXHIQL3SY';
-    // Search recommended and popular venues (https://developer.foursquare.com/docs/venues/explore)
+    // Search recommended and popular venues
+    // (https://developer.foursquare.com/docs/venues/explore)
     var endpoint = [
         'https://api.foursquare.com/v2/venues/explore',
         '?client_id='       + FOURSQUARE_CLIENTID,

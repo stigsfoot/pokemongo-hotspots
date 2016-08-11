@@ -199,7 +199,7 @@ app.viewModel = new (function() {
     // List of hotspots to bind in HTML
     self.pokestops = ko.observableArray();
     // Number of foursquare results to bind to input-group-addon.
-    self.foursquareCount = ko.observable(0);
+    self.foursquareCount = ko.observable(5);
     // Moves & centers map to marker position within .map div
     self.zoomTo = function(poke) {
         document.getElementById("map").focus();
