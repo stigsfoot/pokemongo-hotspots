@@ -1,6 +1,6 @@
-# LitStops | Pokemon Hotspots
+# Poké-n-Chill | Pokemon Hotspots
 
-Things to do around Pokestops. Use when planning a romantic date with your spouse for a "Poke-rific" nightcap. **Rrraaaarrrwwwh!**
+Things to do around Pokestops. Use when planning a romantic date with your spouse for a "Poké-rific" nightcap. **Rrraaaarrrwwwh!**
 
 _This project was my submission as part of the **Front-End Nanodegree** at Udacity._
 
