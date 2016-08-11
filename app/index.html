@@ -56,15 +56,31 @@
       <!-- logo in BG -->
       </header>
       <nav class="main-navigation mdl-navigation mdl-color--blue-grey-800">
-      <!--TODO: loops through filtered densely populated pokestop -->
-        <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Old Town</a>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Mount Vernon</a>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>National Harbor</a>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>White House</a>
-          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>Arlington Area</a>
+        <!--<ul>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <i class="mdl-color-text--blue-grey-400 material-icons mdl-list__item-icon">place</i>
+            </span>
+        </li>
+        </ul>-->
 
-          <div class="mdl-layout-spacer"></div>
-          <a class="mdl-navigation__link" href="https://github.com/stigsfoot/pokemongo-hotspots/blob/master/README.md" target="_blank"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+        <div class="nav-list-icon mdl-list">
+            <table>
+                <tbody data-bind="foreach:pokestops">
+                    <tr data-bind="click: $root.panTo" class="mdl-list__item">
+                        <td><i class="mdl-color-text--blue-grey-400 material-icons mdl-list__item-icon">place</i></td>
+                        <td class="mdl-list__item-primary-content mdl-navigation__link" data-bind="text:title">
+
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mdl-layout-spacer"></div>
+        <a class="mdl-navigation__link" href="https://github.com/stigsfoot/pokemongo-hotspots/blob/master/README.md" target="_blank"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span>
+        </a>
       </nav>
     </aside>
     <!-- end aside-->

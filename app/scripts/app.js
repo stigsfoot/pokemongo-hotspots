@@ -206,6 +206,9 @@ app.viewModel = new (function() {
         app.map.zoomTo(poke.marker.getPosition());
     };
     self.query = ko.observable('');
+
+    self.hotspots = ko.observableArray();
+
 })();
 
 // Process locations from 4SQ responses
