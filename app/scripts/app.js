@@ -4,7 +4,8 @@
  *  map.js Manages Canvas items & Google Maps data
  */
 var app = app || {};
-var POKEMON_ICON = 'images/pokeball_50.png';
+var POKEMON_ICON = '../images/pokeball_50.png';
+var FOURSQUARE_ICON = '../images/4sq_logo.png';
 //var firebase = new Firebase("https://lit-pokestops.firebaseio.com/");
 
 // Default DC region hotspots (pokeHotStops)for Pokemon Users
@@ -207,36 +208,42 @@ app.viewModel = new (function() {
     };
     self.query = ko.observable('');
 
-    self.hotspots = ko.observableArray();
+    self.query.subscribe(function(search) {
+        if (search == '') return;
+        var position = app.map.getCenter();
+        app.getResponse(
+                        position.lat(), position.lng(),
+                        search,
+                        app.processResponse
+        );
+    });
 
 })();
 
 // Process locations from 4SQ responses
 app.processResponse = function(json) {
-    // Delete previous search results markers
-    for (var i = app.viewModel.pokestops().length - 1; i >= 0; i++) {
-        if (app.viewModel.pokestops()[i].marker.icon === 'images/4sq_logo.png') {
+    for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i-1) {
+        if (app.viewModel.pokestops()[i].marker.icon === POKEMON_ICON) {
             app.viewModel.pokestops()[i].marker.setMap(null);
             app.viewModel.pokestops.splice(i, 1);
         }
     }
-    // Add new search results.
-    var spots = json.response.groups['0'].spots;
-    // Update observable for number of foursquare locations near a pokestop.
-    app.viewModel.foursquareCount(spots.length);
-    if (spots.length == 0) {
+    var items = json.response.groups['0'].items;
+
+    app.viewModel.foursquareCount(items.length);
+    if (items.length == 0) {
         alert('No results found for "' + app.viewModel.query() + '"');
     } else {
-        for (var i = 0; i < spots.length; i = i+1) {
+        for (var i = 0; i < items.length; i = i+1) {
             var poke = {
-                title: spots[i].venue.name,
-                icon: 'images/4sq_logo.png',
+                title: items[i].venue.name,
+                icon: FOURSQUARE_ICON,
                 position: {
-                    lat: spots[i].venue.location.lat,
-                    lon: spots[i].venue.location.lng
+                    lat: items[i].venue.location.lat,
+                    lon: items[i].venue.location.lng
                 },
             };
-            app.addMapMarker(poke, 0);
+            app.manageMarker(poke, 0);
         }
     }
 };
@@ -296,5 +303,5 @@ app.manageMarker = function(poke, index) {
 app.infoWindow = function() {
     //TODO: show info for user onClick events
     // Should return Title, Rating, Picture
-    console.log('Triggered an info window')
+    console.log('default DC area Pokemon hotspots');
 };

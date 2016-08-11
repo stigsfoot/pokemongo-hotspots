@@ -7,7 +7,7 @@
 var app = app || {};
 
 // Retrieves Foursquare lat, long and search data
-app.Response = function(lat, lng, query, callback) {
+app.getResponse = function(lat, lng, query, callback) {
     'use strict';
     var xmlhttp = new XMLHttpRequest();
 
