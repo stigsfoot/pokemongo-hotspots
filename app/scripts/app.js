@@ -10,14 +10,14 @@ var FOURSQUARE_ICON = '../images/4sq_logo.png';
 
 // Default DC region hotspots (pokeHotStops)for Pokemon Users
 app.pokestops = [{
-    title: 'Old Town, Alexandria',
+    title: 'Old Town',
     position: {
         lat: 38.8067193,
         lng: -77.0420541
     },
     icon: POKEMON_ICON
 }, {
-    title: 'Mount Vernon Area',
+    title: 'Mount Vernon',
     position: {
         lat: 38.707982,
         lng: -77.0861753
@@ -31,14 +31,14 @@ app.pokestops = [{
     },
     icon: POKEMON_ICON
 }, {
-    title: 'The White House',
+    title: 'White House',
     position: {
         lat: 38.8983312,
         lng: -77.0380863
     },
     icon: POKEMON_ICON
 }, {
-    title: 'Arlington Area',
+    title: 'Arlington',
     position: {
         lat: 38.8809263,
         lng: -77.1723677

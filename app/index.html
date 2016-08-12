@@ -23,7 +23,7 @@
     <!-- // begin header -->
     <header class="main-header mdl-layout__header mdl-color--cyan mdl-color-text--white">
       <div class="mdl-layout__header-row">
-        <span data-bind="text:foursquareCount" class="mdl-layout-title"></span>&nbsp; Results in this area.
+        <span data-bind="text: foursquareCount" class="mdl-layout-title"></span>&nbsp; Results in this area.
         <div class="mdl-layout-spacer"></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
           <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
@@ -56,31 +56,16 @@
       <!-- logo in BG -->
       </header>
       <nav class="main-navigation mdl-navigation mdl-color--blue-grey-800">
-        <!--<ul>
-          <li class="mdl-list__item">
-            <span class="mdl-list__item-primary-content">
-              <i class="mdl-color-text--blue-grey-400 material-icons mdl-list__item-icon">place</i>
-            </span>
-        </li>
-        </ul>-->
+      <span data-bind="foreach:pokestops">
+      <a class="mdl-navigation__link" href="">
+        <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i><!--ko text: title--><!--/ko-->
+      </a>
 
-        <div class="nav-list-icon mdl-list">
-            <table>
-                <tbody data-bind="foreach:pokestops">
-                    <tr data-bind="click: $root.panTo" class="mdl-list__item">
-                        <td><i class="mdl-color-text--blue-grey-400 material-icons mdl-list__item-icon">place</i></td>
-                        <td class="mdl-list__item-primary-content mdl-navigation__link" data-bind="text:title">
-
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+        </span>
         <div class="mdl-layout-spacer"></div>
         <a class="mdl-navigation__link" href="https://github.com/stigsfoot/pokemongo-hotspots/blob/master/README.md" target="_blank"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span>
         </a>
+
       </nav>
     </aside>
     <!-- end aside-->
