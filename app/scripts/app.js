@@ -303,5 +303,5 @@ app.manageMarker = function(poke, index) {
 app.infoWindow = function() {
     //TODO: show info for user onClick events
     // Should return Title, Rating, Picture
-    console.log('default DC area Pokemon hotspots');
+    console.log('default DC area results around Pokemon hotspots');
 };
