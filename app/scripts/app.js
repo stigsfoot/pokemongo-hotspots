@@ -38,6 +38,13 @@ app.pokestops = [{
     },
     icon: POKEMON_ICON
 }, {
+    title: 'Herndon',
+    position: {
+        lat: 38.957888,
+        lng: -77.359920
+    },
+    icon: POKEMON_ICON
+}, {
     title: 'Arlington',
     position: {
         lat: 38.8809263,
