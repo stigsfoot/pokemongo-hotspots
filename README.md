@@ -4,6 +4,8 @@ Things to do around Pokestops. Use when planning a romantic date with your spous
 
 _This project was my submission as part of the **Front-End Nanodegree** at Udacity._
 
+![screen shot](https://firebasestorage.googleapis.com/v0/b/litpokestops.appspot.com/o/assets%2FScreen%20Shot%202016-08-12%20at%201.13.33%20PM.png?alt=media&token=11c170ff-9c33-4c75-bc96-b021a90bfbcf)
+
 
 ## Getting Started
 
