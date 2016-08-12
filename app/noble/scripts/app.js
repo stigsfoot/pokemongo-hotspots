@@ -193,11 +193,11 @@ function initMap() {
 
 
     // Create a heatmap (BUG)
-    app.heatmap = new google.maps.visualization.HeatmapLayer({
-        data: [],
-        map: app.map,
-        radius: 25
-    });
+     app.heatmap = new google.maps.visualization.HeatmapLayer({
+         data: [],
+         map: app.map,
+         radius: 25
+     });
 
     app.firebase.on("child_added", function(snapshot, prevChildKey) {
         //Get latitude and longitude from Firebase.
@@ -219,13 +219,13 @@ function initMap() {
 }
 
 // Main viewModel
-app.viewModel = new(function() {
+app.viewModel = new (function() {
     var self = this;
     // self.heatMapCluster = ko.observableArray();
     // List of hotspots to bind in HTML
     self.pokestops = ko.observableArray();
     // Number of foursquare for the top
-    self.foursquareCount = ko.observable(6); //manual
+    self.foursquareCount = ko.observable(6);//manual
 
     /*self.foursquareCount = ko.computed(function() {
         //return 6;
@@ -243,9 +243,9 @@ app.viewModel = new(function() {
         if (search == '') return;
         var position = app.map.getCenter();
         app.getResponse(
-            position.lat(), position.lng(),
-            search,
-            app.processResponse
+                        position.lat(), position.lng(),
+                        search,
+                        app.processResponse
         );
     });
 
@@ -257,7 +257,7 @@ app.viewModel = new(function() {
 
 // Process locations from 4SQ responses
 app.processResponse = function(json) {
-    for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
+    for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i-1) {
         if (app.viewModel.pokestops()[i].marker.icon === POKEMON_ICON) {
             app.viewModel.pokestops()[i].marker.setMap(null);
             app.viewModel.pokestops.splice(i, 1);
@@ -270,7 +270,7 @@ app.processResponse = function(json) {
     if (items.length == 0) {
         alert('Could not find any "' + app.viewModel.query() + '"');
     } else {
-        for (var i = 0; i < items.length; i = i + 1) {
+        for (var i = 0; i < items.length; i = i+1) {
             var poke = {
                 title: items[i].venue.name,
                 icon: POKEMON_ICON,
@@ -324,7 +324,7 @@ app.manageMarker = function(poke, index) {
         app.viewModel.pokestops.push(poke);
     }
     // shows a infoWindow with restaurants/bars in the area
-
+    
     google.maps.event.addListener(poke.marker, 'click', function(e) {
         app.openInfoWindow(poke);
     });
