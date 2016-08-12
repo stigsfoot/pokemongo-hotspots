@@ -6,7 +6,7 @@
 var app = app || {};
 var POKEMON_ICON = '../images/pokeball_50.png';
 var FOURSQUARE_ICON = '../images/4sq_logo.png';
-//var firebase = new Firebase("https://lit-pokestops.firebaseio.com/");
+
 
 // Default DC region hotspots (pokeHotStops)for Pokemon Users
 app.pokestops = [{
@@ -188,21 +188,23 @@ function initMap() {
     app.map = app.getGMapData(document.getElementById('map')); // Setup and bind map to View
     app.addPokeHotStopsToMap();
     ko.applyBindings(app.viewModel); // Apply KnockoutJS model binding.
+    app.firebase = new Firebase("https://lit-pokestops.firebaseio.com/");
+
 
     // Create a heatmap (BUG)
-    // app.heatmap = new google.maps.visualization.HeatmapLayer({
-    //     data: [],
-    //     map: map,
-    //     radius: 25
-    // });
+     app.heatmap = new google.maps.visualization.HeatmapLayer({
+         data: [],
+         map: app.map,
+         radius: 25
+     });
 
-    // app.firebase.on("child_added", function(snapshot, prevChildKey) {
-        // Get latitude and longitude from Firebase.
-    //     var newPosition = snapshot.val();
-    //     var latLng = new google.maps.LatLng(newPosition.lat, newPosition.lng);
+    app.firebase.on("child_added", function(snapshot, prevChildKey) {
+        //Get latitude and longitude from Firebase.
+        var newPosition = snapshot.val();
+        var latLng = new google.maps.LatLng(newPosition.lat, newPosition.lng);
 
-    //     heatmap.getData().push(latLng);
-    // });
+        app.heatmap.getData().push(latLng);
+    });
 
 }
 
@@ -305,13 +307,13 @@ app.manageMarker = function(poke, index) {
     app.infoWindow(poke);
 
     // Add "marker" (heatmap) on user click & push to database
-    //google.maps.event.addListener(poke.marker, 'click', function(e) {
+    google.maps.event.addListener(poke.marker, 'click', function(e) {
         // places a heatmap at stores that lat/lng to FB
-    //    firebase.push({
-    //        lat: e.latLng.lat(),
-    //        lng: e.latLng.lng()
-    //    });
-    //});
+        firebase.push({
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng()
+        });
+    });
 };
 
 app.infoWindow = function() {
