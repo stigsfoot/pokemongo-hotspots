@@ -11,6 +11,7 @@ var FOURSQUARE_ICON = '../images/4sq_logo.png';
 // Default DC region hotspots (pokeHotStops)for Pokemon Users
 app.pokestops = [{
     title: 'Old Town',
+    team: 'TEAM INSTINCT',
     position: {
         lat: 38.8067193,
         lng: -77.0420541
@@ -18,6 +19,7 @@ app.pokestops = [{
     icon: POKEMON_ICON
 }, {
     title: 'Mount Vernon',
+    team: 'TEAM VALOR',
     position: {
         lat: 38.707982,
         lng: -77.0861753
@@ -25,6 +27,7 @@ app.pokestops = [{
     icon: POKEMON_ICON
 }, {
     title: 'National Harbor',
+    team: 'TEAM MYSTIC',
     position: {
         lat: 38.7890853,
         lng: -77.0213807
@@ -32,6 +35,7 @@ app.pokestops = [{
     icon: POKEMON_ICON
 }, {
     title: 'White House',
+    team: 'TEAM MYSTIC',
     position: {
         lat: 38.8983312,
         lng: -77.0380863
@@ -39,6 +43,7 @@ app.pokestops = [{
     icon: POKEMON_ICON
 }, {
     title: 'Herndon',
+    team: 'TEAM VALOR',
     position: {
         lat: 38.957888,
         lng: -77.359920
@@ -46,6 +51,7 @@ app.pokestops = [{
     icon: POKEMON_ICON
 }, {
     title: 'Arlington',
+    team: 'TEAM VALOR',
     position: {
         lat: 38.8809263,
         lng: -77.1723677
@@ -206,8 +212,8 @@ app.viewModel = new (function() {
     // self.heatMapCluster = ko.observableArray();
     // List of hotspots to bind in HTML
     self.pokestops = ko.observableArray();
-    // Number of foursquare results to bind to input-group-addon.
-    self.foursquareCount = ko.observable(5);
+    // Number of foursquare for the top
+    self.foursquareCount = ko.observable(6);//manual
     // Moves & centers map to marker position within .map div
     self.zoomTo = function(poke) {
         document.getElementById("map").focus();
@@ -235,16 +241,17 @@ app.processResponse = function(json) {
             app.viewModel.pokestops.splice(i, 1);
         }
     }
+    // get results from 4Sq manage with ko
     var items = json.response.groups['0'].items;
-
     app.viewModel.foursquareCount(items.length);
+
     if (items.length == 0) {
-        alert('No results found for "' + app.viewModel.query() + '"');
+        alert('Could not find any "' + app.viewModel.query() + '"');
     } else {
         for (var i = 0; i < items.length; i = i+1) {
             var poke = {
                 title: items[i].venue.name,
-                icon: FOURSQUARE_ICON,
+                icon: POKEMON_ICON,
                 position: {
                     lat: items[i].venue.location.lat,
                     lon: items[i].venue.location.lng
@@ -308,7 +315,8 @@ app.manageMarker = function(poke, index) {
 };
 
 app.infoWindow = function() {
-    //TODO: show info for user onClick events
-    // Should return Title, Rating, Picture
+    // TODO: show info for user onClick events
+    // infoWindow should be a template that is visible=true when user clicks on item on the nav
+    // infoWindow should show 4SQ Title, Rating, Picture and Pokemon Controlling team in the area (manual)
     console.log('default DC area results around Pokemon hotspots');
 };
