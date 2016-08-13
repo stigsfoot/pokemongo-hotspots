@@ -121,3 +121,16 @@ body {
 .main-content {
   max-width: 1080px;
 }
+
+/* Info Window */
+.info-card-wide.mdl-card {
+  width: 512px;
+}
+.info-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 176px;
+  background: url('../images/info_card.jpg') center / cover;
+}
+.info-card-wide > .mdl-card__menu {
+  color: #fff;
+}
