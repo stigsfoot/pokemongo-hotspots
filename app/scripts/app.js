@@ -184,6 +184,7 @@ app.styleArray = [{
 function initMap() {
     'use strict';
 
+    //window.mapBounds = new google.maps.LatLngBounds();
     app.center = new google.maps.LatLng(38.8067193, -77.0420541); // Map data in the DC/VA/MD metro area
     app.map = app.getGMapData(document.getElementById('map')); // Setup and bind map to View
     app.infoWindow = new google.maps.InfoWindow();
@@ -216,6 +217,7 @@ function initMap() {
             lat: e.latLng.lat(),
             lng: e.latLng.lng()
         });
+        console.log('heatmap placed');
     });
 
 }
@@ -251,7 +253,11 @@ app.viewModel = new(function() {
     self.query = ko.observable('');
 
     self.query.subscribe(function(search) {
+
         if (search == '') return;
+
+        //var mapBounds = app.map.fitBounds(window);
+
         var position = app.map.getCenter();
         app.getResponse(
             position.lat(), position.lng(),
@@ -259,6 +265,15 @@ app.viewModel = new(function() {
             app.processResponse
         );
     });
+
+    // Error handling
+    self.connectionError = function() {
+        var contentString = '<div id="show-toast" class="mdl-js-snackbar mdl-snackbar">'
+                            +    '<div class="mdl-snackbar__text"><h2>Unable to Connect</h2>Please check your connection</div>'
+                            +'</div>';
+        return contentString;
+    };
+
     // Manage clicks on the left of the map
     self.listClick = function(poke) {
         app.openInfoWindow(poke);
@@ -308,7 +323,7 @@ app.getGMapData = function(mapDiv) {
     // Configure and add map to map div.
     var mapFeatures = {
         center: app.center,
-        zoom: 12,
+        zoom: 10,
         mapTypeControl: false,
         styles: app.styleArray,
         disableDoubleClickZoom: true
@@ -377,3 +392,6 @@ app.openInfoWindow = function(location) {
         location.marker.setAnimation(google.maps.Animation.BOUNCE);
         app.marker = location.marker;
 };
+
+
+

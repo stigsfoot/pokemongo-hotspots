@@ -36,8 +36,7 @@ app.getResponse = function(lat, lng, query, callback) {
         '&client_secret='   + FOURSQUARE_SECRET,
         '&ll='  + lat + ',' + lng,
         '&v=20160810',
-        '&openNow=1',
-        '&radius=250',
+        '&radius=150',
         '&query=' + query
         ].join('');
     xmlhttp.open('GET', endpoint, true);
