@@ -184,10 +184,12 @@ app.styleArray = [{
 function initMap() {
     'use strict';
 
-    //window.mapBounds = new google.maps.LatLngBounds();
+    app.mapBounds = new google.maps.LatLngBounds();
     app.center = new google.maps.LatLng(38.8067193, -77.0420541); // Map data in the DC/VA/MD metro area
     app.map = app.getGMapData(document.getElementById('map')); // Setup and bind map to View
+    // Use built in InfoWindow library for better perf/responsiveness
     app.infoWindow = new google.maps.InfoWindow();
+
     app.addPokeHotStopsToMap();
 
     ko.applyBindings(app.viewModel); // Apply KnockoutJS model binding.
@@ -217,8 +219,9 @@ function initMap() {
             lat: e.latLng.lat(),
             lng: e.latLng.lng()
         });
-        console.log('heatmap placed');
+        console.log('Heatmap placed, recorded and updated');
     });
+
 
 }
 
@@ -228,27 +231,23 @@ app.viewModel = new(function() {
     // self.heatMapCluster = ko.observableArray();
     // List of hotspots to bind in HTML
     self.pokestops = ko.observableArray();
-    // Foursquare info
-    // Number of initial foursquare for the top banner
-    self.foursquareCount = ko.observable(6); //manual
 
-    /*self.foursquareCount = ko.computed(function() {
-        //return 6;
+    // Number of initial foursquare for the top banner
+    self.foursquareCount = ko.computed(function() {
         var num = self.pokestops().length;
         return num;
-    });*/
+    });
+
     // Moves & centers map to marker position within .map div
     self.zoomTo = function(poke) {
         document.getElementById("map").focus();
         app.map.zoomTo(poke.marker.getPosition());
     };
-    // Foursquare venue descriptor
-    self.description = ko.computed(function() {
-        var desc = self.pokestops().description;
-        return desc;
-    });
-    // Bind error messages
-    self.noResults = ko.observable('Could not find anything');
+    // Bind rating
+    self.fsqRating = ko.observable(app.poke); //TODO: Research
+    // Help Text
+    self.helpText =  ko.observable('This map starts with a default list of Pokemon hotspots. Clicking on an area in the map means there is Pokemon activity in this area.  Search for a place and get ideas on where to chill if the place is in a hotspot');
+
     // Bind queries
     self.query = ko.observable('');
 
@@ -256,8 +255,7 @@ app.viewModel = new(function() {
 
         if (search == '') return;
 
-        //var mapBounds = app.map.fitBounds(window);
-
+        var mapBounds = app.map.fitBounds();
         var position = app.map.getCenter();
         app.getResponse(
             position.lat(), position.lng(),
@@ -266,7 +264,8 @@ app.viewModel = new(function() {
         );
     });
 
-    // Error handling
+    // Error handling via MDL toast message
+    // TODO: Finish and use instead of alert()
     self.connectionError = function() {
         var contentString = '<div id="show-toast" class="mdl-js-snackbar mdl-snackbar">'
                             +    '<div class="mdl-snackbar__text"><h2>Unable to Connect</h2>Please check your connection</div>'
@@ -275,32 +274,34 @@ app.viewModel = new(function() {
     };
 
     // Manage clicks on the left of the map
-    self.listClick = function(poke) {
-        app.openInfoWindow(poke);
+    self.listClick = function(location) {
+        app.openInfoWindow(location);
     }
 
 })();
 
 // Process locations from 4SQ responses
 app.processResponse = function(json) {
+
     for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
         if (app.viewModel.pokestops()[i].marker.icon === POKEMON_ICON) {
             app.viewModel.pokestops()[i].marker.setMap(null);
             app.viewModel.pokestops.splice(i, 1);
         }
     }
-    // Get results from 4Sq manage with ko
+    // Query foursquare API for venue data/recommendations near the current location.
+    // Updated the tutorial to fit this need https://developer.foursquare.com/overview/tutorial
     var items = json.response.groups['0'].items;
     app.viewModel.foursquareCount(items.length);
 
     if (items.length == 0) {
-        alert('Could not find "' + app.viewModel.query() + '"');
+        alert('I could not find "' + app.viewModel.query() + '"');
     } else {
         for (var i = 0; i < items.length; i = i + 1) {
             var poke = {
                 title: items[i].venue.name,
-                icon: POKEMON_ICON,
-                description: items[i].venue.description,
+                icon: FOURSQUARE_ICON,
+                rating: items[i].venue.rating,
                 position: {
                     lat: items[i].venue.location.lat,
                     lng: items[i].venue.location.lng
@@ -313,6 +314,7 @@ app.processResponse = function(json) {
 
 // Add markers from the list above
 app.addPokeHotStopsToMap = function() {
+
     for (var i = 0; i < app.pokestops.length; i++) {
         app.manageMarker(app.pokestops[i]);
     };
@@ -323,7 +325,7 @@ app.getGMapData = function(mapDiv) {
     // Configure and add map to map div.
     var mapFeatures = {
         center: app.center,
-        zoom: 10,
+        zoom: 11,
         mapTypeControl: false,
         styles: app.styleArray,
         disableDoubleClickZoom: true
@@ -341,7 +343,6 @@ app.manageMarker = function(poke, index) {
         position: new google.maps.LatLng(p.lat, p.lng),
         map: app.map,
         title: poke.title,
-        description: poke.description,
         icon: poke.icon,
         animation: google.maps.Animation.DROP
     });
@@ -352,7 +353,7 @@ app.manageMarker = function(poke, index) {
     } else {
         app.viewModel.pokestops.push(poke);
     }
-    // shows a infoWindow with restaurants/bars in the area
+    // shows a infoWindow with recommended places in the area
     google.maps.event.addListener(poke.marker, 'click', function(e) {
         app.openInfoWindow(poke);
     });
@@ -363,13 +364,13 @@ app.openInfoWindow = function(location) {
     console.log(location);
     // TODO: show info for user onClick events
     // infoWindow should be a template that is visible=true when user clicks on item on the nav
-    // infoWindow should show 4SQ Title, Rating, Picture and Pokemon Controlling team in the area (manual)
+    // infoWindow should show 4SQ Recommended venues + (nice to have) controlling team in the area (manual)
+    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com';
     var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">'
                         +  '<div class="mdl-card__title">'
-                        +    '<h2 class="mdl-card__title-text">Poke-n-Chill Hotspots</h2>'
+                        +    '<h2 class="mdl-card__title-text" data-bind="text: genericTitle"></h2>'
                         +  '</div>'
-                        +  '<div class="mdl-card__supporting-text">'
-                        +    'Description text app.viewModel.description();'
+                        +  '<div class="mdl-card__supporting-text" data-bind="text: team">'
                         +  '</div>'
                         +  '<div class="mdl-card__actions mdl-card--border">'
                         +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="#" target="_blank">'
@@ -377,11 +378,16 @@ app.openInfoWindow = function(location) {
                         +    '</a>'
                         +  '</div>'
                         +  '<div class="mdl-card__menu">'
-                        +    '<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">'
+                        +    '<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="window.location.href='+ shareUrl +'">'
                         +      '<i class="material-icons">share</i>'
                         +    '</button>'
                         +  '</div>'
                         +'</div>';
+    // TODO: If default card show genericTitle else show Fourscare result
+    var genericTitle = "Poke-n-Chill Hotspot";
+    var fsqTitle = app.pokestops.title;
+    var fsqRating = app.fsqRating;
+    var team = app.pokestops.team;
 
     app.infoWindow.setContent(contentString);
     app.infoWindow.open(app.map, location.marker);

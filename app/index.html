@@ -36,6 +36,14 @@
             <label class="mdl-textfield__label" for="search">Search Places</label>
           </div>
         </div>
+
+
+
+        <div class="mdl-layout-spacer"></div>
+
+        <div class=" material-icons" role="presentation"  id="tt1">help_outline</div>
+        <div class="mdl-tooltip mdl-tooltip--large " for="tt1"  data-bind="text: helpText"></div>
+
         <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
           <!-- additional information about project/Noble -->
           <i class="material-icons">more_vert</i>
@@ -46,6 +54,8 @@
           <li class="mdl-menu__item"><a href="https://github.com/stigsfoot" target="_blank">Github Profile</a></li>
           <li class="mdl-menu__item"><a href="https://google.com/+nobleackerson" target="_blank">Google Plus</a></li>
         </ul>
+
+
       </div>
     </header>
     <!-- // end header -->
@@ -57,12 +67,15 @@
       <!-- logo in BG -->
       </header>
       <nav class="main-navigation mdl-navigation mdl-color--blue-grey-800">
-
+      <!-- Filters results list -->
         <div class="mdl-textfield mdl-js-textfield">
-          <input class="mdl-textfield__input mdl-color-text--white" type="text" id="filter">
-          <label class="mdl-textfield__label mdl-color-text--blue-grey-400" for="filter">Filter Results</label>
-        </div>
 
+          <input class="mdl-textfield__input mdl-color-text--white" type="text" id="filter">
+          <label class="mdl-textfield__label mdl-color-text--blue-grey-400" for="filter"> &nbsp; Filter</label>
+
+        </div>
+        <!--//end filter-->
+        <!-- Display list of places -->
         <span data-bind="foreach:pokestops">
           <a class="mdl-navigation__link" href="#" data-bind="click: $root.listClick">
             <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i><!--ko text: title--><!--/ko-->
