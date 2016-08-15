@@ -368,7 +368,7 @@ app.openInfoWindow = function(location) {
     var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com'; //TODO Fix
     var fsqTitle = location.title;
     var fsqRating = location.rating;
-    var team = app.viewModel.pokestops().team;
+    var team = location.team;
 
     var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">'
                         +  '<div class="mdl-card__title">'
@@ -384,7 +384,7 @@ app.openInfoWindow = function(location) {
                             if (fsqRating){
                                 contentString += 'This place has a <strong class="mdl-badge" data-badge="4Sq">' + fsqRating + '</strong> rating.';
                             } else {
-                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in that area.';
+                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in this location.';
                             }
 
         contentString +=  '</div>'
