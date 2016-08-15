@@ -366,12 +366,28 @@ app.openInfoWindow = function(location) {
     // infoWindow should be a template that is visible=true when user clicks on item on the nav
     // infoWindow should show 4SQ Recommended venues + (nice to have) controlling team in the area (manual)
     var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com'; //TODO Fix
+    var fsqTitle = location.title;
+    var fsqRating = location.rating;
+    var team = app.viewModel.pokestops().team;
+
     var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">'
                         +  '<div class="mdl-card__title">'
-                        +    '<h2 class="mdl-card__title-text" data-bind="text: genericTitle"></h2>'
+                        +    '<h2 class="mdl-card__title-text">';
+                                if (fsqTitle) {
+                                    contentString += fsqTitle;
+                                } else {
+                                    contentString += 'Poke-n-Chill Hotspot';
+                                }
+        contentString += '</h2>'
                         +  '</div>'
-                        +  '<div class="mdl-card__supporting-text" data-bind="text: team">'
-                        +  '</div>'
+                        +  '<div class="mdl-card__supporting-text">';
+                            if (fsqRating){
+                                contentString += 'This place has a <strong class="mdl-badge" data-badge="4Sq">' + fsqRating + '</strong> rating.';
+                            } else {
+                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in that area.';
+                            }
+
+        contentString +=  '</div>'
                         +  '<div class="mdl-card__actions mdl-card--border">'
                         +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="#" target="_blank">'
                         +      "Visit Place"
@@ -383,11 +399,6 @@ app.openInfoWindow = function(location) {
                         +    '</button>'
                         +  '</div>'
                         +'</div>';
-    // TODO: If default card show genericTitle else show Fourscare result
-    var genericTitle = "Poke-n-Chill Hotspot";
-    var fsqTitle = app.pokestops.title;
-    var fsqRating = app.fsqRating;
-    var team = app.pokestops.team;
 
     app.infoWindow.setContent(contentString);
     app.infoWindow.open(app.map, location.marker);
