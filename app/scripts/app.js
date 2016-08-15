@@ -184,7 +184,7 @@ app.styleArray = [{
 function initMap() {
     'use strict';
 
-    app.mapBounds = new google.maps.LatLngBounds();
+    // app.mapBounds = new google.maps.LatLngBounds(window);
     app.center = new google.maps.LatLng(38.8067193, -77.0420541); // Map data in the DC/VA/MD metro area
     app.map = app.getGMapData(document.getElementById('map')); // Setup and bind map to View
     // Use built in InfoWindow library for better perf/responsiveness
@@ -233,10 +233,10 @@ app.viewModel = new(function() {
     self.pokestops = ko.observableArray();
 
     // Number of initial foursquare for the top banner
-    self.foursquareCount = ko.computed(function() {
-        var num = self.pokestops().length;
-        return num;
-    });
+    // self.foursquareCount = ko.computed(function() {
+    //     return self.pokestops().length;
+    // });
+    self.foursquareCount = ko.observable(6);
 
     // Moves & centers map to marker position within .map div
     self.zoomTo = function(poke) {
@@ -250,12 +250,11 @@ app.viewModel = new(function() {
 
     // Bind queries
     self.query = ko.observable('');
-
     self.query.subscribe(function(search) {
 
         if (search == '') return;
 
-        var mapBounds = app.map.fitBounds();
+        // var mapBounds = app.map.fitBounds();
         var position = app.map.getCenter();
         app.getResponse(
             position.lat(), position.lng(),
@@ -295,7 +294,7 @@ app.processResponse = function(json) {
     app.viewModel.foursquareCount(items.length);
 
     if (items.length == 0) {
-        alert('I could not find "' + app.viewModel.query() + '"');
+        alert('I could not find "' + app.viewModel.query() + '"'); // TODO: Return html object for toast
     } else {
         for (var i = 0; i < items.length; i = i + 1) {
             var poke = {
@@ -343,6 +342,7 @@ app.manageMarker = function(poke, index) {
         position: new google.maps.LatLng(p.lat, p.lng),
         map: app.map,
         title: poke.title,
+        rating: poke.rating,
         icon: poke.icon,
         animation: google.maps.Animation.DROP
     });
@@ -365,7 +365,7 @@ app.openInfoWindow = function(location) {
     // TODO: show info for user onClick events
     // infoWindow should be a template that is visible=true when user clicks on item on the nav
     // infoWindow should show 4SQ Recommended venues + (nice to have) controlling team in the area (manual)
-    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com';
+    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com'; //TODO Fix
     var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">'
                         +  '<div class="mdl-card__title">'
                         +    '<h2 class="mdl-card__title-text" data-bind="text: genericTitle"></h2>'
@@ -374,7 +374,7 @@ app.openInfoWindow = function(location) {
                         +  '</div>'
                         +  '<div class="mdl-card__actions mdl-card--border">'
                         +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="#" target="_blank">'
-                        +      "Visit Hotspot"
+                        +      "Visit Place"
                         +    '</a>'
                         +  '</div>'
                         +  '<div class="mdl-card__menu">'
