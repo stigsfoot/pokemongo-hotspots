@@ -24,7 +24,7 @@
     <!-- // begin header -->
     <header class="main-header mdl-layout__header mdl-color--cyan mdl-color-text--white">
       <div class="mdl-layout__header-row">
-        <span data-bind="text: foursquareCount" class="mdl-layout-title"></span>&nbsp; Results in this area | Things to do around Pokéstops
+        <span data-bind="text: foursquareCount" class="mdl-layout-title"></span>&nbsp; things to do while Pokémon'ing
         <div class="mdl-layout-spacer"></div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
           <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
@@ -70,15 +70,17 @@
       <!-- Filters results list -->
         <div class="mdl-textfield mdl-js-textfield">
 
-          <input class="mdl-textfield__input mdl-color-text--white" type="text" id="filter">
-          <label class="mdl-textfield__label mdl-color-text--blue-grey-400" for="filter"> &nbsp; Filter</label>
+          <input class="mdl-textfield__input mdl-color-text--white" type="text" id="filter" data-bind="submit: filterResults">
+          <label class="mdl-textfield__label mdl-color-text--blue-grey-400" for="filter" data-bind="value: filterQuery, selectOnFocus: true"> &nbsp; Filter by team</label>
+          <i class="material-icons" data-bind="visible: filteredList().length > 0, click: resetFilter">Clear filter</i>
 
         </div>
         <!--//end filter-->
         <!-- Display list of places -->
         <span data-bind="foreach:pokestops">
           <a class="mdl-navigation__link" href="#" data-bind="click: $root.listClick">
-            <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i><!--ko text: title--><!--/ko-->
+            <i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">place</i>
+            <!--ko text: title--><!--/ko-->
           </a>
         </span>
 

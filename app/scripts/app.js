@@ -189,13 +189,9 @@ function initMap() {
     app.map = app.getGMapData(document.getElementById('map')); // Setup and bind map to View
     // Use built in InfoWindow library for better perf/responsiveness
     app.infoWindow = new google.maps.InfoWindow();
-
     app.addPokeHotStopsToMap();
 
-    ko.applyBindings(app.viewModel); // Apply KnockoutJS model binding.
-
     app.firebase = new Firebase("https://lit-pokestops.firebaseio.com/"); //persist heatmap data in Firebase
-
 
     // Create a heatmap (constructor)
     app.heatmap = new google.maps.visualization.HeatmapLayer({
@@ -219,9 +215,10 @@ function initMap() {
             lat: e.latLng.lat(),
             lng: e.latLng.lng()
         });
-        console.log('Heatmap placed, recorded and updated');
+        //console.log('Heatmap placed, recorded and updated');
     });
 
+    ko.applyBindings(app.viewModel); // Apply KnockoutJS model binding.
 
 }
 
@@ -238,15 +235,17 @@ app.viewModel = new(function() {
     // });
     self.foursquareCount = ko.observable(6);
 
-    // Moves & centers map to marker position within .map div
-    self.zoomTo = function(poke) {
-        document.getElementById("map").focus();
-        app.map.zoomTo(poke.marker.getPosition());
-    };
     // Bind rating
     self.fsqRating = ko.observable(app.poke); //TODO: Research
     // Help Text
     self.helpText =  ko.observable('This map starts with a default list of Pokemon hotspots. Clicking on an area in the map means there is Pokemon activity in this area.  Search for a place and get ideas on where to chill if the place is in a hotspot');
+
+    // Filtered queries
+    self.filteredList = ko.observableArray([]);
+    self.resetFilter = ko.observable();
+    self.filterResults = ko.observableArray([]);
+    self.filterQuery = ko.observable('');
+
 
     // Bind queries
     self.query = ko.observable('');
@@ -281,11 +280,11 @@ app.viewModel = new(function() {
 
 // Process locations from 4SQ responses
 app.processResponse = function(json) {
-
+    var location = app.viewModel;
     for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
-        if (app.viewModel.pokestops()[i].marker.icon === POKEMON_ICON) {
-            app.viewModel.pokestops()[i].marker.setMap(null);
-            app.viewModel.pokestops.splice(i, 1);
+        if (location.pokestops()[i].marker.icon === POKEMON_ICON) {
+            location.pokestops()[i].marker.setMap(null);
+            location.pokestops.splice(i, 1);
         }
     }
     // Query foursquare API for venue data/recommendations near the current location.
@@ -311,6 +310,11 @@ app.processResponse = function(json) {
     }
 };
 
+// Moves & centers map to marker position within .map div
+app.zoomTo = function(poke) {
+        document.getElementById("map").focus();
+        app.map.zoomTo(poke.marker.getPosition());
+};
 // Add markers from the list above
 app.addPokeHotStopsToMap = function() {
 
@@ -359,13 +363,41 @@ app.manageMarker = function(poke, index) {
     });
 };
 
+// Setup result filter based on team
+app.filterResults = function() {
+    var fQuery = self.filterQuery();
+    var resultList = [];
+
+    if(!fQuery) {
+        return
+    } else {
+        self.filteredList();
+        // Trying out default Sublime for loop to filter team based results and return markers based on matches
+        for (var i = location.length - 1; i >= 0; i--) {
+
+            if (location[i].team.indexOf(fQuery)!= -1) {
+                self.marker([i].marker.setMap(map));
+                self.filteredList.push(resultList[i]);
+            } else {
+                self.marker([i].marker.setMap(null));
+            }
+        }
+    }
+};
+// reset the filter
+app.resetFilter = function() {
+self.filterResults(self.location());
+self.filterQuery('');
+    for(var i = 0; i < self.marker().length; i++) {
+      self.marker()[i].marker.setMap(map);
+    }
+};
 
 app.openInfoWindow = function(location) {
-    console.log(location);
-    // TODO: show info for user onClick events
+    //console.log(location);
     // infoWindow should be a template that is visible=true when user clicks on item on the nav
-    // infoWindow should show 4SQ Recommended venues + (nice to have) controlling team in the area (manual)
-    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://lit-pokestops.firebaseapp.com'; //TODO Fix
+    // infoWindow should show 4SQ Recommended venues +  controlling team in the area
+    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://litpokestops.firebaseapp.com';
     var fsqTitle = location.title;
     var fsqRating = location.rating;
     var team = location.team;
@@ -384,20 +416,20 @@ app.openInfoWindow = function(location) {
                             if (fsqRating){
                                 contentString += 'This place has a <strong class="mdl-badge" data-badge="4Sq">' + fsqRating + '</strong> rating.';
                             } else {
-                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in this location.';
+                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in this location. ';
                             }
 
         contentString +=  '</div>'
                         +  '<div class="mdl-card__actions mdl-card--border">'
-                        +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="#" target="_blank">'
-                        +      "Visit Place"
+                        +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="'+ shareUrl +'" target="_blank">'
+                        +      "Share to facebook"
                         +    '</a>'
                         +  '</div>'
-                        +  '<div class="mdl-card__menu">'
+                        /*+  '<div class="mdl-card__menu">'
                         +    '<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="window.location.href='+ shareUrl +'">'
                         +      '<i class="material-icons">share</i>'
                         +    '</button>'
-                        +  '</div>'
+                        +  '</div>'*/
                         +'</div>';
 
     app.infoWindow.setContent(contentString);
