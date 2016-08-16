@@ -256,25 +256,30 @@ app.viewModel = new(function() {
 
     self.currentFilter = ko.observable(); // This store the filter
     self.filterLocations = ko.computed(function() {
-        console.log(self.currentFilter());
+        //console.log(self.currentFilter());
+       console.log(app.pokestops);
 
-        if (!self.currentFilter()) {
+       if (!self.currentFilter()) {
             return self.pokestops();
-        }
+       }
         return ko.utils.arrayFilter(self.pokestops(), function(loc) {
-            console.log(loc);
-            //console.log(app.marker);
+            //console.log(loc);
+
 
             // if location team name contains self.currentFilter()
-            if (loc.team.indexOf(self.currentFilter)){
+            if (loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0){
                 // show the map marker
+                app.pokestops.setVisible(true);
                 // show the list item
+                self.loc.setVisible(false);
+                return true;
 
              } else {
                 // hide the map marker
-                app.marker.setVisible(false);
+                app.pokestops.setVisible(false);
                 // hide the list item
                 self.loc.setVisible(false);
+                return false;
             }                        
         });
     });
