@@ -228,7 +228,7 @@ app.viewModel = new(function() {
     // self.heatMapCluster = ko.observableArray();
     // List of hotspots to bind in HTML
     self.pokestops = ko.observableArray();
-
+    self.showMarker = new self.pokestops();
     // Number of initial foursquare for the top banner
     // self.foursquareCount = ko.computed(function() {
     //     return self.pokestops().length;
@@ -236,16 +236,9 @@ app.viewModel = new(function() {
     self.foursquareCount = ko.observable(6);
 
     // Bind rating
-    self.fsqRating = ko.observable(app.poke); //TODO: Research
+    self.fsqRating = ko.observable(app.poke);
     // Help Text
-    self.helpText =  ko.observable('This map starts with a default list of Pokemon hotspots. Clicking on an area in the map means there is Pokemon activity in this area.  Search for a place and get ideas on where to chill if the place is in a hotspot');
-
-    // Filtered queries
-    self.filteredList = ko.observableArray([]);
-    self.resetFilter = ko.observable();
-    self.filterResults = ko.observableArray([]);
-    self.filterQuery = ko.observable('');
-
+    self.helpText =  ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place near a hotspot.');
 
     // Bind queries
     self.query = ko.observable('');
@@ -363,36 +356,6 @@ app.manageMarker = function(poke, index) {
     });
 };
 
-// Setup result filter based on team
-app.filterResults = function() {
-    var fQuery = self.filterQuery();
-    var resultList = [];
-
-    if(!fQuery) {
-        return
-    } else {
-        self.filteredList();
-        // Trying out default Sublime for loop to filter team based results and return markers based on matches
-        for (var i = location.length - 1; i >= 0; i--) {
-
-            if (location[i].team.indexOf(fQuery)!= -1) {
-                self.marker([i].marker.setMap(map));
-                self.filteredList.push(resultList[i]);
-            } else {
-                self.marker([i].marker.setMap(null));
-            }
-        }
-    }
-};
-// reset the filter
-app.resetFilter = function() {
-self.filterResults(self.location());
-self.filterQuery('');
-    for(var i = 0; i < self.marker().length; i++) {
-      self.marker()[i].marker.setMap(map);
-    }
-};
-
 app.openInfoWindow = function(location) {
     //console.log(location);
     // infoWindow should be a template that is visible=true when user clicks on item on the nav
@@ -443,4 +406,43 @@ app.openInfoWindow = function(location) {
 };
 
 
+//Begin refactor to make it easy to add future features e.g filter
+var PokeStop = function(location) {
+    // New approach with Pokestop constructor/Class
+    this.lat = app.lat;
+    this.lng = app.lng;
+    this.title = app.title;
+    this.team = app.team;
+    this.rating = app.rating;
+
+};
+
+// A bit of help from http://stackoverflow.com/questions/20857594/knockout-filtering-on-observable-array
+PokeStop.prototype.showMarker = function() {
+  // "this" is the current location/pokestop
+  var self = this;
+  self.locations = ko.observableArray([]);
+
+  self.currentFilter = ko.observable(); // This store the filter
+
+  self.filterLocations = ko.computed(function() {
+        if(!self.currentFilter()) {
+            this.marker.setVisible(true);
+            return self.locations(); //initial load when no team filter is specified
+        } else {
+            locations.forEach(function(marker) {
+                this.marker.setVisible(false);
+            });
+
+        return ko.utils.arrayFilter(self.locations(), function(loc) {
+            return loc.team == self.currentFilter();
+            });
+        }
+    });
+
+  self.filterLocations = function (team) {
+        self.currentFilter(team);
+    }
+
+};
 
