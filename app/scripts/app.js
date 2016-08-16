@@ -238,14 +238,13 @@ app.viewModel = new(function() {
     // Bind rating
     self.fsqRating = ko.observable(app.poke);
     // Help Text
-    self.helpText =  ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place near a hotspot.');
+    self.helpText = ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place near a hotspot.');
 
     // Bind queries
     self.query = ko.observable('');
     self.query.subscribe(function(search) {
 
         if (search == '') return;
-
         // var mapBounds = app.map.fitBounds();
         var position = app.map.getCenter();
         app.getResponse(
@@ -255,194 +254,171 @@ app.viewModel = new(function() {
         );
     });
 
-    // Error handling via MDL toast message
-    // TODO: Finish and use instead of alert()
-    self.connectionError = function() {
-        var contentString = '<div id="show-toast" class="mdl-js-snackbar mdl-snackbar">'
-                            +    '<div class="mdl-snackbar__text"><h2>Unable to Connect</h2>Please check your connection</div>'
-                            +'</div>';
-        return contentString;
-    };
+    self.currentFilter = ko.observable(); // This store the filter
+    self.filterLocations = ko.computed(function() {
+        console.log(self.currentFilter());
+
+        if (!self.currentFilter()) {
+            return self.pokestops();
+        }
+        return ko.utils.arrayFilter(self.pokestops(), function(loc) {
+            console.log(loc);
+            //console.log(app.marker);
+
+            // if location team name contains self.currentFilter()
+            if (loc.team.indexOf(self.currentFilter)){
+                // show the map marker
+                // show the list item
+
+             } else {
+                // hide the map marker
+                app.marker.setVisible(false);
+                // hide the list item
+                self.loc.setVisible(false);
+            }                        
+        });
+    });
 
     // Manage clicks on the left of the map
     self.listClick = function(location) {
         app.openInfoWindow(location);
     }
+});
 
-})();
-
-// Process locations from 4SQ responses
-app.processResponse = function(json) {
-    var location = app.viewModel;
-    for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
-        if (location.pokestops()[i].marker.icon === POKEMON_ICON) {
-            location.pokestops()[i].marker.setMap(null);
-            location.pokestops.splice(i, 1);
+    // Process locations from 4SQ responses
+    app.processResponse = function(json) {
+        var location = app.viewModel;
+        for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
+            if (location.pokestops()[i].marker.icon === POKEMON_ICON) {
+                location.pokestops()[i].marker.setMap(null);
+                location.pokestops.splice(i, 1);
+            }
         }
-    }
-    // Query foursquare API for venue data/recommendations near the current location.
-    // Updated the tutorial to fit this need https://developer.foursquare.com/overview/tutorial
-    var items = json.response.groups['0'].items;
-    app.viewModel.foursquareCount(items.length);
+        // Query foursquare API for venue data/recommendations near the current location.
+        // Updated the tutorial to fit this need https://developer.foursquare.com/overview/tutorial
+        var items = json.response.groups['0'].items;
+        app.viewModel.foursquareCount(items.length);
 
-    if (items.length == 0) {
-        alert('I could not find "' + app.viewModel.query() + '"'); // TODO: Return html object for toast
-    } else {
-        for (var i = 0; i < items.length; i = i + 1) {
-            var poke = {
-                title: items[i].venue.name,
-                icon: FOURSQUARE_ICON,
-                rating: items[i].venue.rating,
-                position: {
-                    lat: items[i].venue.location.lat,
-                    lng: items[i].venue.location.lng
-                },
-            };
-            app.manageMarker(poke, 0);
+        if (items.length == 0) {
+            alert('I could not find "' + app.viewModel.query() + '"'); // TODO: Return html object for toast
+        } else {
+            for (var i = 0; i < items.length; i = i + 1) {
+                var poke = {
+                    title: items[i].venue.name,
+                    icon: FOURSQUARE_ICON,
+                    rating: items[i].venue.rating,
+                    position: {
+                        lat: items[i].venue.location.lat,
+                        lng: items[i].venue.location.lng
+                    },
+                };
+                app.manageMarker(poke, 0);
+            }
         }
-    }
-};
+    };
 
-// Moves & centers map to marker position within .map div
-app.zoomTo = function(poke) {
+    // Moves & centers map to marker position within .map div
+    app.zoomTo = function(poke) {
         document.getElementById("map").focus();
         app.map.zoomTo(poke.marker.getPosition());
-};
-// Add markers from the list above
-app.addPokeHotStopsToMap = function() {
-
-    for (var i = 0; i < app.pokestops.length; i++) {
-        app.manageMarker(app.pokestops[i]);
     };
-};
+    // Add markers from the list above
+    app.addPokeHotStopsToMap = function() {
 
-// Get Google Map
-app.getGMapData = function(mapDiv) {
-    // Configure and add map to map div.
-    var mapFeatures = {
-        center: app.center,
-        zoom: 11,
-        mapTypeControl: false,
-        styles: app.styleArray,
-        disableDoubleClickZoom: true
+        for (var i = 0; i < app.pokestops.length; i++) {
+            app.manageMarker(app.pokestops[i]);
+        };
     };
 
-    return new google.maps.Map(mapDiv, mapFeatures);
-};
+    // Get Google Map
+    app.getGMapData = function(mapDiv) {
+        // Configure and add map to map div.
+        var mapFeatures = {
+            center: app.center,
+            zoom: 11,
+            mapTypeControl: false,
+            styles: app.styleArray,
+            disableDoubleClickZoom: true
+        };
 
-// Capture marker, save in FB/show more info
-app.marker = null;
-app.manageMarker = function(poke, index) {
-    // Drop default markers
-    var p = poke.position;
-    poke.marker = new google.maps.Marker({
-        position: new google.maps.LatLng(p.lat, p.lng),
-        map: app.map,
-        title: poke.title,
-        rating: poke.rating,
-        icon: poke.icon,
-        animation: google.maps.Animation.DROP
-    });
+        return new google.maps.Map(mapDiv, mapFeatures);
+    };
 
-    // Add result with marker to the knockoutjs observable list.
-    if (index !== undefined && index / 1 == index) {
-        app.viewModel.pokestops.splice(0, 0, poke);
-    } else {
-        app.viewModel.pokestops.push(poke);
-    }
-    // shows a infoWindow with recommended places in the area
-    google.maps.event.addListener(poke.marker, 'click', function(e) {
-        app.openInfoWindow(poke);
-    });
-};
+    // Capture marker, save in FB/show more info
+    app.marker = null;
+    app.manageMarker = function(poke, index) {
+        // Drop default markers
+        var p = poke.position;
+        poke.marker = new google.maps.Marker({
+            position: new google.maps.LatLng(p.lat, p.lng),
+            map: app.map,
+            title: poke.title,
+            rating: poke.rating,
+            icon: poke.icon,
+            animation: google.maps.Animation.DROP
+        });
 
-app.openInfoWindow = function(location) {
-    //console.log(location);
-    // infoWindow should be a template that is visible=true when user clicks on item on the nav
-    // infoWindow should show 4SQ Recommended venues +  controlling team in the area
-    var shareUrl = 'http://www.facebook.com/sharer.php?u=https://litpokestops.firebaseapp.com';
-    var fsqTitle = location.title;
-    var fsqRating = location.rating;
-    var team = location.team;
+        // Add result with marker to the knockoutjs observable list.
+        if (index !== undefined && index / 1 == index) {
+            app.viewModel.pokestops.splice(0, 0, poke);
+        } else {
+            app.viewModel.pokestops.push(poke);
+        }
+        // shows a infoWindow with recommended places in the area
+        google.maps.event.addListener(poke.marker, 'click', function(e) {
+            app.openInfoWindow(poke);
+        });
+    };
 
-    var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">'
-                        +  '<div class="mdl-card__title">'
-                        +    '<h2 class="mdl-card__title-text">';
-                                if (fsqTitle) {
-                                    contentString += fsqTitle;
-                                } else {
-                                    contentString += 'Poke-n-Chill Hotspot';
-                                }
-        contentString += '</h2>'
-                        +  '</div>'
-                        +  '<div class="mdl-card__supporting-text">';
-                            if (fsqRating){
-                                contentString += 'This place has a <strong class="mdl-badge" data-badge="4Sq">' + fsqRating + '</strong> rating.';
-                            } else {
-                                contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in this location. ';
-                            }
+    app.openInfoWindow = function(location) {
+        //console.log(location);
+        // infoWindow should be a template that is visible=true when user clicks on item on the nav
+        // infoWindow should show 4SQ Recommended venues +  controlling team in the area
+        var shareUrl = 'http://www.facebook.com/sharer.php?u=https://litpokestops.firebaseapp.com';
+        var fsqTitle = location.title;
+        var fsqRating = location.rating;
+        var team = location.team;
 
-        contentString +=  '</div>'
-                        +  '<div class="mdl-card__actions mdl-card--border">'
-                        +    '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="'+ shareUrl +'" target="_blank">'
-                        +      "Share to facebook"
-                        +    '</a>'
-                        +  '</div>'
-                        /*+  '<div class="mdl-card__menu">'
-                        +    '<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="window.location.href='+ shareUrl +'">'
-                        +      '<i class="material-icons">share</i>'
-                        +    '</button>'
-                        +  '</div>'*/
-                        +'</div>';
+        var contentString = '<div class="info-card-wide mdl-card mdl-shadow--2dp">' +
+            '<div class="mdl-card__title">' +
+            '<h2 class="mdl-card__title-text">';
+        if (fsqTitle) {
+            contentString += fsqTitle;
+        } else {
+            contentString += 'Poke-n-Chill Hotspot';
+        }
+        contentString += '</h2>' +
+            '</div>' +
+            '<div class="mdl-card__supporting-text">';
+        if (fsqRating) {
+            contentString += 'This place has a <strong class="mdl-badge" data-badge="4Sq">' + fsqRating + '</strong> rating.';
+        } else {
+            contentString += 'This area is controlled by ' + team + ' but there are some fun things to do. Try searching for a business in this location. ';
+        }
 
-    app.infoWindow.setContent(contentString);
-    app.infoWindow.open(app.map, location.marker);
+        contentString += '</div>' +
+            '<div class="mdl-card__actions mdl-card--border">' +
+            '<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="' + shareUrl + '" target="_blank">' +
+            "Share to facebook" +
+            '</a>' +
+            '</div>'
+            /*+  '<div class="mdl-card__menu">'
+            +    '<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onclick="window.location.href='+ shareUrl +'">'
+            +      '<i class="material-icons">share</i>'
+            +    '</button>'
+            +  '</div>'*/
+            +
+            '</div>';
 
-    if (app.marker != null) {
+        app.infoWindow.setContent(contentString);
+        app.infoWindow.open(app.map, location.marker);
+
+        if (app.marker != null) {
             app.marker.setAnimation(null);
         }
         location.marker.setAnimation(google.maps.Animation.BOUNCE);
         app.marker = location.marker;
-};
+    };
 
 
-//Begin refactor to make it easy to add future features e.g filter
-var PokeStop = function(location) {
-    // New approach with Pokestop constructor/Class
-    this.lat = app.lat;
-    this.lng = app.lng;
-    this.title = app.title;
-    this.team = app.team;
-    this.rating = app.rating;
-
-};
-
-// A bit of help from http://stackoverflow.com/questions/20857594/knockout-filtering-on-observable-array
-PokeStop.prototype.showMarker = function() {
-  // "this" is the current location/pokestop
-  var self = this;
-  self.locations = ko.observableArray([]);
-
-  self.currentFilter = ko.observable(); // This store the filter
-
-  self.filterLocations = ko.computed(function() {
-        if(!self.currentFilter()) {
-            this.marker.setVisible(true);
-            return self.locations(); //initial load when no team filter is specified
-        } else {
-            locations.forEach(function(marker) {
-                this.marker.setVisible(false);
-            });
-
-        return ko.utils.arrayFilter(self.locations(), function(loc) {
-            return loc.team == self.currentFilter();
-            });
-        }
-    });
-
-  self.filterLocations = function (team) {
-        self.currentFilter(team);
-    }
-
-};
 
