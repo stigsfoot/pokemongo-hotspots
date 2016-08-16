@@ -21,9 +21,9 @@ or
 
 ### Build
 
-1. Assumes you already have NPM running
-2. While in the root project directory, run: npm install.
-3. To build the dist folder, from the root project directory run the following: gulp.
+1. Assumes you already have latest NPM & GRUNT running (no clue why I chose grunt in the beginning)
+2. While in the root project directory, run: grunt serve -f.
+3. To build the dist folder, from the root project directory run the following: grunt build serve -f.
 
 
 ### Technologies Used
