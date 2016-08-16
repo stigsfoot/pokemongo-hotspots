@@ -11,7 +11,7 @@ These instructions will get you a copy of Poké-n-Chill up and running on your l
 
 ### Prerequisities
 
-You can see this project live on Firebase [Poké-n-Chill](http://litstops.firebaseapp.com). However to run it locally, you need to simply run
+You can see this project live on Firebase [Poké-n-Chill](https://litpokestops.firebaseapp.com/). However to run it locally, you need to simply run
 
 ```
 app/index.htm
