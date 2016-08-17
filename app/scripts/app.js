@@ -255,34 +255,48 @@ app.viewModel = new(function() {
     });
 
     self.currentFilter = ko.observable(); // This store the filter
+    // this is similar to an observable array, but
+    // its elements will be selected dynamically
     self.filterLocations = ko.computed(function() {
-        //console.log(self.currentFilter());
-       console.log(app.pokestops);
+    // if the current filter is empty, we return the whole array
+    // as there's no need to filter it
+   if (!self.currentFilter()) {
+        // but we also make every pokestops visible
+        self.pokestops().forEach(function(loc) {
+            // loc.marker is the google marker object
+            // it has a setVisible method
+            loc.marker.setVisible(true);
+        });
+        // return the entire array
+        return self.pokestops();
+   }
+    // otherwise return arrayFilter, which is a function
+    // that filters an array
+    return ko.utils.arrayFilter(self.pokestops(), function(loc) {
+        // this function will run for every elements of self.pokestops()
+        // it's similar to array.forEach
+        // for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+        // if we return true, the location will be in the array
+        // if we return false, the location WON'T be in the array
 
-       if (!self.currentFilter()) {
-            return self.pokestops();
-       }
-        return ko.utils.arrayFilter(self.pokestops(), function(loc) {
-            //console.log(loc);
+        // if location title or team contains self.currentFilter()
+        if (loc.title.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0 ||
+            loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0) {
+            // show marker
+            loc.marker.setVisible(true);
+            // return true from arrayFilter
+            // so this loc will be in filterLocations
+            return true;
 
-
-            // if location team name contains self.currentFilter()
-            if (loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0){
-                // show the map marker
-                app.pokestops.setVisible(true);
-                // show the list item
-                self.loc.setVisible(false);
-                return true;
-
-             } else {
-                // hide the map marker
-                app.pokestops.setVisible(false);
-                // hide the list item
-                self.loc.setVisible(false);
-                return false;
-            }                        
-        });
+         } else {
+            // hide the marker
+            loc.marker.setVisible(false);
+            // return false from arrayFilter
+            // so this loc will not be in filterLocations
+            return false;
+        }
     });
+});
 
     // Manage clicks on the left of the map
     self.listClick = function(location) {
