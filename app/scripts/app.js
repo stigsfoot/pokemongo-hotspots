@@ -308,7 +308,8 @@ app.viewModel = new(function() {
     // Process locations from 4SQ responses
     app.processResponse = function(json) {
         var location = app.viewModel;
-        for (var i = app.viewModel.pokestops().length - 1; i >= 0; i = i - 1) {
+        for (var i = 0;  i <  app.viewModel.pokestops().length;  i = i + 1) {
+
             if (location.pokestops()[i].marker.icon === POKEMON_ICON) {
                 location.pokestops()[i].marker.setMap(null);
                 location.pokestops.splice(i, 1);
@@ -355,10 +356,10 @@ app.viewModel = new(function() {
         // Configure and add map to map div.
         var mapFeatures = {
             center: app.center,
-            zoom: 11,
+            zoom: 12,
             mapTypeControl: false,
             styles: app.styleArray,
-            disableDoubleClickZoom: true
+            disableDoubleClickZoom: false
         };
 
         return new google.maps.Map(mapDiv, mapFeatures);
