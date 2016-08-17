@@ -284,6 +284,7 @@ app.viewModel = new(function() {
             loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0) {
             // show marker
             loc.marker.setVisible(true);
+            loc.marker.setAnimation(google.maps.Animation.BOUNCE);
             // return true from arrayFilter
             // so this loc will be in filterLocations
             return true;
