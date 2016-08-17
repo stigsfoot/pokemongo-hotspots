@@ -74,7 +74,7 @@ body {
       -ms-flex-pack: end;
           justify-content: flex-end;
   padding: 0px;
-  /*height: 151px;*/
+  height: 65px;
 }
 .main-avatar-dropdown {
   display: -webkit-flex;
