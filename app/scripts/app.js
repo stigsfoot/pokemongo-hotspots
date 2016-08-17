@@ -323,7 +323,7 @@ app.viewModel = new(function() {
         if (items.length == 0) {
             alert('I could not find "' + app.viewModel.query() + '"'); // TODO: Return html object for toast
         } else {
-            for (var i = 0; i < items.length; i = i + 1) {
+            for (var i = 0, max = items.length; i < max; i++){
                 var poke = {
                     title: items[i].venue.name,
                     icon: FOURSQUARE_ICON,
