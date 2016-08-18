@@ -235,7 +235,7 @@ app.viewModel = new(function() {
     // });
     self.foursquareCount = ko.observable(6);
     // Help Text
-    self.helpText = ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place at the top. Filter to the left.');
+    self.helpText = ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place at the top. Filter options to the left.');
 
     // Bind queries
     self.query = ko.observable('');
