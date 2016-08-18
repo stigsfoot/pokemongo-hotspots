@@ -42,3 +42,9 @@ app.getResponse = function(lat, lng, query, callback) {
     xmlhttp.open('GET', endpoint, true);
     xmlhttp.send();
 };
+
+// Error message if map does not load
+app.connectionError = function() {
+
+  alert("I'm sorry Dave, I'm afraid I can't do that! There is a connection error with Google Maps.");
+};

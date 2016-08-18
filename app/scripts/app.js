@@ -234,11 +234,8 @@ app.viewModel = new(function() {
     //     return self.pokestops().length;
     // });
     self.foursquareCount = ko.observable(6);
-
-    // Bind rating
-    self.fsqRating = ko.observable(app.poke);
     // Help Text
-    self.helpText = ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place near a hotspot.');
+    self.helpText = ko.observable('This map starts with a default list of Pokemon hotspots. Help curate more hotspots on the map by clicking the map canvas.  Search for a place at the top. Filter to the left.');
 
     // Bind queries
     self.query = ko.observable('');
@@ -260,36 +257,39 @@ app.viewModel = new(function() {
     self.filterLocations = ko.computed(function() {
     // if the current filter is empty, we return the whole array
     // as there's no need to filter it
-   if (!self.currentFilter()) {
-        // but we also make every pokestops visible
+    if (!self.currentFilter()) {
+    // but we also make every pokestops visible
         self.pokestops().forEach(function(loc) {
-            // loc.marker is the google marker object
-            // it has a setVisible method
-            loc.marker.setVisible(true);
+        //loc.marker is the google marker object
+        // it has a setVisible method
+        loc.marker.setVisible(true);
         });
         // return the entire array
         return self.pokestops();
-   }
+    }
     // otherwise return arrayFilter, which is a function
     // that filters an array
     return ko.utils.arrayFilter(self.pokestops(), function(loc) {
+        // Thanks to @kataram & @ryanvrba for helping explain this
         // this function will run for every elements of self.pokestops()
         // it's similar to array.forEach
         // for more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
         // if we return true, the location will be in the array
         // if we return false, the location WON'T be in the array
-
         // if location title or team contains self.currentFilter()
-        if (loc.title.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0 ||
-            loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0) {
-            // show marker
+        if (loc.title.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0 || loc.team.toLowerCase().indexOf(self.currentFilter().toLowerCase()) >= 0) {
+        // show marker
             loc.marker.setVisible(true);
+            // Make the marker bounce when marker is shown then make it stop after 3secs
             loc.marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    loc.marker.setAnimation(null)
+                }, 3000);
             // return true from arrayFilter
             // so this loc will be in filterLocations
             return true;
 
-         } else {
+            } else {
             // hide the marker
             loc.marker.setVisible(false);
             // return false from arrayFilter
@@ -308,13 +308,10 @@ app.viewModel = new(function() {
     // Process locations from 4SQ responses
     app.processResponse = function(json) {
         var location = app.viewModel;
-        for (var i = 0;  i <  app.viewModel.pokestops().length;  i = i + 1) {
-
-            if (location.pokestops()[i].marker.icon === POKEMON_ICON) {
-                location.pokestops()[i].marker.setMap(null);
-                location.pokestops.splice(i, 1);
-            }
+        for (var i = location.pokestops().length - 1; i >= 0; i = i - 1) {
+            location.pokestops()[i].marker.setMap(null);
         }
+        location.pokestops.removeAll();
         // Query foursquare API for venue data/recommendations near the current location.
         // Updated the tutorial to fit this need https://developer.foursquare.com/overview/tutorial
         var items = json.response.groups['0'].items;
@@ -438,6 +435,10 @@ app.viewModel = new(function() {
             app.marker.setAnimation(null);
         }
         location.marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            location.marker.setAnimation(null)
+        }, 3000);
+
         app.marker = location.marker;
     };
 
