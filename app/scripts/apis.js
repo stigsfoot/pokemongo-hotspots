@@ -26,8 +26,8 @@ app.getResponse = function(lat, lng, query, callback) {
         alert('Can not connect with Foursquare');
     });
 
-    var FOURSQUARE_CLIENTID = 'AGY01VY2EHXDQOJB0QLY25IQXZKMZLHJAX3CWWPU5HYVPYPT';
-    var FOURSQUARE_SECRET   = 'EUKNHNC0ZQNTFWXHOW3USKLCTGEKGWF5KQQCT5OJXHIQL3SY';
+    var FOURSQUARE_CLIENTID = '[replace with your own]';
+    var FOURSQUARE_SECRET   = '[replace with your own]';
     // Search recommended and popular venues
     // (https://developer.foursquare.com/docs/venues/explore)
     var endpoint = [
